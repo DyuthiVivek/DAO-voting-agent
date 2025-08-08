@@ -60,6 +60,9 @@ GEMINI_API_KEY=
 
 # e.g. gemini-pro
 GEMINI_MODEL=
+
+# serper api key
+SERPER_API_KEY=
 ```
 
 ## Usage example

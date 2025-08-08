@@ -4,8 +4,9 @@ import readline from 'node:readline/promises';
 import process from 'node:process';
 import { MemorySaver } from '@langchain/langgraph';
 import { createReactAgent, ToolNode } from '@langchain/langgraph/prebuilt';
-import { HumanMessage } from '@langchain/core/messages';
+import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { allJokeTools } from './tools/joke.js';
+import { allWebSearchTools } from './tools/websearch.js';
 import { createInstance as createLlmInstance } from './api/gemini.js';
 import { createInstance as createHederaInstance } from './api/hedera-client.js'
 import { convertMcpToLangchainTools } from '@h1deya/langchain-mcp-tools';
@@ -27,10 +28,19 @@ const checkpointSaver = new MemorySaver();
 const llm = createLlmInstance();
 createHederaInstance();
 
-// Bind Hedera and joke tools to the LLM
+function ensureToolInstance(T) {
+    try {
+    if (typeof T === 'function') {
+      return new T();
+    }
+  } catch (e) {}
+  return T;
+}
+
 const toolClasses = [
   ...tools, // from MCP (Hedera) tools
-  ...(typeof allJokeTools !== 'undefined' ? allJokeTools : []) // if joke tools are imported
+  ...(typeof allJokeTools !== 'undefined' ? allJokeTools.map(ensureToolInstance) : []),
+  ...(typeof allWebSearchTools !== 'undefined' ? allWebSearchTools.map(ensureToolInstance) : [])
 ];
 const llmWithTools = llm.bindTools(toolClasses);
 
@@ -63,10 +73,13 @@ const SYSTEM_PROMPT = HEDERA_ACCOUNT_ID
   ? `You are an agent with access to a Hedera account. Always use the following Hedera account number for any blockchain-related actions: ${HEDERA_ACCOUNT_ID}`
   : undefined;
 
+
+let isFirstPrompt = true;
 async function obtainAgentReply(userPrompt) {
   const messages = [];
-  if (SYSTEM_PROMPT) {
-    messages.push({ role: 'system', content: SYSTEM_PROMPT });
+  if (SYSTEM_PROMPT && isFirstPrompt) {
+    messages.push(new SystemMessage(SYSTEM_PROMPT));
+    isFirstPrompt = false;
   }
   messages.push(new HumanMessage(userPrompt));
   const reply = await agent.invoke(
