@@ -243,22 +243,36 @@ export default function TrustlessDAOApp() {
     setIsTyping(true)
 
     // Simulate bot response
-    setTimeout(() => {
-      const botResponse = generateBotResponse(chatInput, daos, transactions)
-      const botMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'bot',
-        content: botResponse,
-        timestamp: new Date().toISOString()
+    try {
+      const response = await fetch('http://localhost:5000/agent', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userPrompt: chatInput }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-      setChatMessages(prev => [...prev, botMessage])
+
+      const data = await response.json();
+      const botMessage: ChatMessage = {
+        id: Date.now().toString(),
+        type: 'bot',
+        content: data.reply,
+        timestamp: new Date().toISOString(),
+      };
+      setChatMessages((prev) => [...prev, botMessage]);
       setIsTyping(false)
-    }, 1500)
+    } catch (error) {
+       console.error('Error calling agent API:', error);
+       setIsTyping(false);
+    }
   }
 
   const generateBotResponse = (input: string, daos: DAO[], transactions: Transaction[]): string => {
-    const lowerInput = input.toLowerCase()
-    
+    const lowerInput = input.toLowerCase();
     if (lowerInput.includes('dao') && lowerInput.includes('how many')) {
       return `You currently have ${daos.length} DAOs in your portfolio. ${daos.filter(d => d.agentEnabled).length} of them have agent voting enabled.`
     }
@@ -776,7 +790,7 @@ export default function TrustlessDAOApp() {
       )}
 
       {chatOpen && (
-        <div className={`fixed bottom-6 right-6 z-50 transition-all duration-300 ${
+        <div className={`fixed bottom-15 right-6 z-50 transition-all duration-300 ${
           chatMinimized ? 'w-80 h-12' : 'w-96 h-[500px]'
         }`}>
           <Card className="h-full bg-gray-800 border-gray-700 shadow-2xl">
@@ -868,6 +882,8 @@ export default function TrustlessDAOApp() {
     </div>
   )
 }
+
+
 
 // Add DAO Form Component
 function AddDAOForm({ onSubmit }: { onSubmit: (data: any) => void }) {
