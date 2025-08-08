@@ -20,7 +20,9 @@ const mcpServers = {
   },
 };
 
-const { tools: mcpLangChainTools } = await convertMcpToLangchainTools(mcpServers);
+const { tools: mcpLangChainTools } = await convertMcpToLangchainTools(mcpServers, {
+  toolTimeout: 1200000, // 30 seconds
+});
 const tools = [...mcpLangChainTools];
 const toolsNode = new ToolNode(tools);
 

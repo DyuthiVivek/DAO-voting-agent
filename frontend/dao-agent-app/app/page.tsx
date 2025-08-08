@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -791,7 +791,7 @@ export default function TrustlessDAOApp() {
 
       {chatOpen && (
         <div className={`fixed bottom-15 right-6 z-50 transition-all duration-300 ${
-          chatMinimized ? 'w-80 h-12' : 'w-96 h-[500px]'
+          chatMinimized ? 'w-80 h-12' : 'w-[500px] h-[500px]'
         }`}>
           <Card className="h-full bg-gray-800 border-gray-700 shadow-2xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 border-b border-gray-700">
@@ -930,10 +930,7 @@ function AddDAOForm({ onSubmit }: { onSubmit: (data: any) => void }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent className="bg-gray-800 border-gray-700">
-            <SelectItem value="Ethereum">Ethereum</SelectItem>
-            <SelectItem value="Polygon">Polygon</SelectItem>
-            <SelectItem value="Arbitrum">Arbitrum</SelectItem>
-            <SelectItem value="Optimism">Optimism</SelectItem>
+            <SelectItem value="Hedera">Hedera</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -1035,7 +1032,9 @@ function DAOPreferencesForm({ dao, onSave }: { dao: DAO, onSave: (preferences: D
         </div>
       </div>
 
-      <Button onClick={handleSave} className="w-full bg-blue-600 hover:bg-blue-700">Save Preferences</Button>
+      <DialogClose asChild>
+        <Button onClick={handleSave} className="w-full bg-blue-600 hover:bg-blue-700">Save Preferences</Button>
+      </DialogClose>
     </div>
   )
 }
