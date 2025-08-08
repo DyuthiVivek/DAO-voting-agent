@@ -1,0 +1,38 @@
+{
+  "name": "langgraph-hedera-workshop",
+  "version": "0.0.0",
+  "description": "Build AI agents for Hedera using LangGraph",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hedera-dev/langgraph-hedera-workshop.git"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "langgraph",
+    "workshop",
+    "tutorial"
+  ],
+  "author": "bguiz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hedera-dev/langgraph-hedera-workshop/issues"
+  },
+  "homepage": "https://github.com/hedera-dev/langgraph-hedera-workshop#readme",
+  "dependencies": {
+    "@h1deya/langchain-mcp-tools": "0.1.14",
+    "@hashgraph/sdk": "2.59.0",
+    "@langchain/core": "^0.3.67",
+    "@langchain/google-genai": "^0.2.16",
+    "@langchain/langgraph": "^0.4.3",
+    "@langchain/openai": "0.4.4",
+    "dotenv": "16.4.7",
+    "hedera-agent-kit": "1.0.4",
+    "openapi-mcp-server": "1.2.0-beta05",
+    "zod": "3.24.2"
+  }
+}
