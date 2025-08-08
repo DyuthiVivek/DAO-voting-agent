@@ -10,7 +10,7 @@ import { allWebSearchTools } from './tools/websearch.js';
 import { createInstance as createLlmInstance } from './api/gemini.js';
 import { createInstance as createHederaInstance } from './api/hedera-client.js'
 import { convertMcpToLangchainTools } from '@h1deya/langchain-mcp-tools';
-import { create } from 'node:domain';
+
 
 const mcpServers = {
   hederaMirrorNode: {
@@ -29,12 +29,12 @@ const llm = createLlmInstance();
 createHederaInstance();
 
 function ensureToolInstance(T) {
-    try {
+  try {
     if (typeof T === 'function') {
       return new T();
     }
   } catch (e) {}
-  return T;
+    return T;
 }
 
 const toolClasses = [
@@ -49,7 +49,6 @@ const agent = createReactAgent({
   tools: toolClasses,
   checkpointSaver,
 });
-
 
 const rlp = readline.createInterface({
   input: process.stdin,
@@ -66,7 +65,6 @@ async function readUserPrompt() {
     lines.push(line);
   }
 }
-
 
 const HEDERA_ACCOUNT_ID = process.env.HEDERA_ACCOUNT_ID;
 const SYSTEM_PROMPT = HEDERA_ACCOUNT_ID
@@ -95,17 +93,50 @@ async function obtainAgentReply(userPrompt) {
   return agentReply;
 }
 
-while (true) {
-  console.log('You:\n');
-  const userPrompt = await readUserPrompt();
+Bun.serve({
+  port: 5000,
+  async fetch(req) {
+    const { pathname } = new URL(req.url);
 
-  if (userPrompt.trim() === '/history') {
-    console.log('--- Agent History ---');
-    console.dir(checkpointSaver, { depth: null });
-    continue;
+    if (req.method === 'OPTIONS') {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'POST, OPTIONS',
+          'Access-Control-Allow-Headers': 'Content-Type',
+        },
+      });
+    }
+
+    if (pathname === '/agent') {
+      if (req.method === 'POST') {
+        const { userPrompt } = await req.json();
+        const agentReply = await obtainAgentReply(userPrompt);
+
+        return new Response(JSON.stringify({ reply: agentReply }), {
+          headers: {
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*',
+          },
+        });
+      }
+    }
+    return new Response(null, { status: 404 });
   }
+});
 
-  console.log('Agent:\n');
-  const agentReply = await obtainAgentReply(userPrompt);
-  console.log(agentReply);
-}
+// Remove the old CLI loop
+// while (true) {
+//   console.log('You:\n');
+//   const userPrompt = await readUserPrompt();
+
+//   if (userPrompt.trim() === '/history') {
+//     console.log('--- Agent History ---');
+//     console.dir(checkpointSaver, { depth: null });
+//     continue;
+//   }
+
+//   console.log('Agent:\n');
+//   const agentReply = await obtainAgentReply(userPrompt);
+//   console.log(agentReply);
+// }
