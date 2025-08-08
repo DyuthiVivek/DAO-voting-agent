@@ -7,6 +7,7 @@ import { createReactAgent, ToolNode } from '@langchain/langgraph/prebuilt';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { allJokeTools } from './tools/joke.js';
 import { allWebSearchTools } from './tools/websearch.js';
+import { allDaoTools } from './tools/dao-tools.ts';
 import { createInstance as createLlmInstance } from './api/gemini.js';
 import { createInstance as createHederaInstance } from './api/hedera-client.js'
 import { convertMcpToLangchainTools } from '@h1deya/langchain-mcp-tools';
@@ -40,7 +41,8 @@ function ensureToolInstance(T) {
 const toolClasses = [
   ...tools, // from MCP (Hedera) tools
   ...(typeof allJokeTools !== 'undefined' ? allJokeTools.map(ensureToolInstance) : []),
-  ...(typeof allWebSearchTools !== 'undefined' ? allWebSearchTools.map(ensureToolInstance) : [])
+  ...(typeof allWebSearchTools !== 'undefined' ? allWebSearchTools.map(ensureToolInstance) : []),
+  ...(typeof allDaoTools !== 'undefined' ? allDaoTools.map(ensureToolInstance) : [])
 ];
 const llmWithTools = llm.bindTools(toolClasses);
 
@@ -68,7 +70,7 @@ async function readUserPrompt() {
 
 const HEDERA_ACCOUNT_ID = process.env.HEDERA_ACCOUNT_ID;
 const SYSTEM_PROMPT = HEDERA_ACCOUNT_ID
-  ? `You are an agent with access to a Hedera account. Always use the following Hedera account number for any blockchain-related actions: ${HEDERA_ACCOUNT_ID}`
+  ? `You are an agent with access to a Hedera account. Always use the following Hedera account number for any blockchain-related actions: ${HEDERA_ACCOUNT_ID}. If any transaction occurs, always return the transaction ID in your response.`
   : undefined;
 
 
@@ -125,7 +127,6 @@ Bun.serve({
   }
 });
 
-// Remove the old CLI loop
 // while (true) {
 //   console.log('You:\n');
 //   const userPrompt = await readUserPrompt();
