@@ -13,7 +13,7 @@ Ctrl+Alt+Elite
 
 Trustless DAO Agent
 
-## Elevator pitch
+## Elevator Pitch
 
 Autonomous trustless AI agent that researches DAO proposals via web search, matches them to your preferences, and votes/stakes on Hedera.
 
@@ -69,6 +69,18 @@ GEMINI_MODEL=
 SERPER_API_KEY=
 ```
 
-## Usage example
+## Usage Example
 
-## Known issues
+USER PROMPT: Here is the smart contract ID for my Pizza Topping DAO: xxx. Monitor all proposals and vote YES only for veggie toppings, vote NO otherwise. 
+
+AGENT RESPONSE: Noted! Fetching all proposals:
+
+- Proposal 1: Onion
+- Proposal 2: Pineapple
+- Proposal 3: Chicken
+
+Among the proposals listed, onions are vegetables but pineapple and chicken are not. I will vote YES for proposal 1 and NO for proposals 2 and 3 on your behalf.
+
+## Known Issues
+
+Due to unavailability of proposal creation methods on HashioDAO, we simulated the DAO process by creating our own smart contracts outlining the rules of a DAO. In the future, we hope to integrate our MCP with existing DAO platforms such as HashioDAO, providing a one-stop solution to automated DAO management.
