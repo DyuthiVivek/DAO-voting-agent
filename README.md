@@ -34,8 +34,12 @@ When a new DAO proposal emerges, the agent:
 
 Security is central: your keys stay in your control, delegation is revocable, and all actions are verifiable on-chain. The decision process, including research data, is fully auditable in a **React-based governance dashboard** where you can configure preferences, review proposals with AI explanations, override votes, and track token performance.
 
-## Install steps
+## Installation
 
+1. Set environment variables in a .env file.
+2. Install `bun` using the command `curl -fsSL https://bun.sh/install | bash`.
+3. Run `node mcpAgent.ts` in the background and `npm run dev` to start the frontend.
+   
 ## Environment variables
 
 ```sh
