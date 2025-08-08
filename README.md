@@ -1,13 +1,13 @@
 # Trustless DAO agent
 
-## Contact names and Telegram Handle
+## Contact Names and Telegram Handles
 
 Dyuthi Vivek - @DyuthiVivek (primary contact) <br>
 Swetha Murali - @swetha344
 
-## Team name
+## Team Name
 
-Ctrl+alt+elite
+Ctrl+Alt+Elite
 
 ## Project Title
 
@@ -36,11 +36,11 @@ Security is central: your keys stay in your control, delegation is revocable, an
 
 ## Installation
 
-1. Set environment variables in a .env file.
+1. Set environment variables listed below in a .env file.
 2. Install `bun` using the command `curl -fsSL https://bun.sh/install | bash`.
 3. Run `node mcpAgent.ts` in the background and `npm run dev` to start the frontend.
    
-## Environment variables
+## Environment Variables
 
 ```sh
 # Hedera config
